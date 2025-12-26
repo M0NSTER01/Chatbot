@@ -1,23 +1,26 @@
 require('dotenv').config(); // Load environment variables
-const express = require('express');
 const http = require('http');
-const { Server } = require('socket.io');
-const cors = require('cors');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-const app = express();
-const server = http.createServer(app);
+
+let express = require("express");
+let { createServer } = require("http");
+let { Server } = require("socket.io");
+let path = require("path");
+let app = express();
+const cors = require("cors");
+const { send } = require("process");
+
+app.use(cors());
+let server = createServer(app);
+let io = new Server(server, {
+    cors: { origin: "*" } 
+});
+
 
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-const io = new Server(server, {
-    cors: {
-        origin: 'http://localhost:3000', // React app URL
-        methods: ['GET', 'POST'],
-    },
-});
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 app.use(cors());
 
